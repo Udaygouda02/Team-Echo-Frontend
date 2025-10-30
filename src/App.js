@@ -13,6 +13,17 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// Typing indicator component
+const TypingIndicator = () => (
+  <div className="flex items-center space-x-2 px-4 py-2 rounded-2xl bg-white border border-gray-200 w-fit">
+    <div className="flex space-x-1">
+      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+    </div>
+  </div>
+);
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState("");
@@ -22,6 +33,7 @@ const App = () => {
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
 
   // Function to format date
   const formatDate = (date) => {
@@ -90,6 +102,9 @@ const App = () => {
         : chat
     ));
 
+    // Show typing indicator
+    setIsTyping(true);
+
     // Simulate bot response
     setTimeout(() => {
       const botResponse = {
@@ -98,13 +113,14 @@ const App = () => {
         text: "I understand your message. How can I help you further?",
         timestamp: formatTime()
       };
+      setIsTyping(false);
       setMessages(prev => [...prev, botResponse]);
       setChatHistory(prev => prev.map(chat => 
         chat.id === currentChatId 
           ? { ...chat, lastMessage: botResponse.text }
           : chat
       ));
-    }, 1000);
+    }, 2000);
 
     if (selectedFile) {
       setSelectedFile(null);
@@ -286,6 +302,13 @@ const App = () => {
               </div>
             </div>
           ))}
+          {isTyping && (
+            <div className="flex justify-start w-full">
+              <div className="flex flex-col gap-1 max-w-[70%] items-start">
+                <TypingIndicator />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Input Area */}
