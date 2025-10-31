@@ -12,6 +12,32 @@ const App = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  
+  // Reference for auto-scrolling
+  const messagesEndRef = React.useRef(null);
+
+  // Function to scroll to bottom
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      setTimeout(() => {
+        messagesEndRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+          inline: "nearest"
+        });
+      }, 100);
+    }
+  };
+
+  // Handle scroll on new messages, typing indicator, or chat switch
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping, currentChatId]);
+
+  // Initial scroll when component mounts
+  React.useEffect(() => {
+    scrollToBottom();
+  }, []);
 
   // ✅ Ref for auto-scroll
   const messagesEndRef = useRef(null);
